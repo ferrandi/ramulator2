@@ -85,6 +85,10 @@ class IMemorySystem : public TopLevel<IMemorySystem>
     {
         return -1.0f;
     };
+
+    virtual int get_current_tick() {
+      return -1;
+    };
 };
 
 } // namespace Ramulator

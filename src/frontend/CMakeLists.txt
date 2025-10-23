@@ -17,6 +17,8 @@ target_sources(
   impl/processor/bhO3/bhllc.h     impl/processor/bhO3/bhllc.cpp
 
   impl/external_wrapper/gem5_frontend.cpp
+
+  impl/my_wrapper/my_wrapper.cpp
 )
 
 target_link_libraries(

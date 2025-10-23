@@ -99,6 +99,11 @@ class GenericDRAMSystem final : public IMemorySystem, public Implementation
         return m_dram->m_timing_vals("tCK_ps") / 1000.0f;
     }
 
+    int get_current_tick() override
+    {
+        return m_clk;
+    }
+
     // const SpecDef& get_supported_requests() override {
     //   return m_dram->m_requests;
     // };

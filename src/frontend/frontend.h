@@ -73,6 +73,8 @@ class IFrontEnd : public Clocked<IFrontEnd>, public TopLevel<IFrontEnd>
     {
         return false;
     }
+
+    virtual void advance(int ticks) { return; };
 };
 
 } // namespace Ramulator
