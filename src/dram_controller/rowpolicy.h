@@ -9,6 +9,8 @@
 namespace Ramulator
 {
 
+class IDRAMController;
+
 class IRowPolicy
 {
     RAMULATOR_REGISTER_INTERFACE(IRowPolicy, "RowPolicy", "Row Policy Interface.");

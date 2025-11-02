@@ -68,15 +68,6 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
         m_scheduler = create_child_ifce<IScheduler>();
         m_refresh = create_child_ifce<IRefreshManager>();
         m_rowpolicy = create_child_ifce<IRowPolicy>();
-
-        if (m_config["plugins"])
-        {
-            YAML::Node plugin_configs = m_config["plugins"];
-            for (YAML::iterator it = plugin_configs.begin(); it != plugin_configs.end(); ++it)
-            {
-                m_plugins.push_back(create_child_ifce<IControllerPlugin>(*it));
-            }
-        }
     };
 
     void setup(IFrontEnd* frontend, IMemorySystem* memory_system) override
@@ -221,13 +212,7 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
         // 2.1 Take row policy action
         m_rowpolicy->update(request_found, req_it);
 
-        // 3. Update all plugins
-        for (auto plugin : m_plugins)
-        {
-            plugin->update(request_found, req_it);
-        }
-
-        // 4. Finally, issue the commands to serve the request
+        // 3. Finally, issue the commands to serve the request
         if (request_found)
         {
             // If we find a real request to serve

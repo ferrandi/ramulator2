@@ -6,7 +6,6 @@
 
 #include "base/base.h"
 #include "base/config.h"
-#include "example/example_ifce.h"
 #include "frontend/frontend.h"
 #include "memory_system/memory_system.h"
 

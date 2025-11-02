@@ -5,8 +5,6 @@ target_sources(
   addr_mapper.h 
 
   impl/linear_mappers.cpp
-  impl/rit.cpp
-  impl/rit.h
 )
 
 target_link_libraries(

@@ -1,9 +1,6 @@
 Frontend:
-  impl: SimpleO3
+  impl: MyWrapper
   clock_ratio: 8
-  num_expected_insts: 500000
-  traces: 
-    - example_inst.trace
 
   Translation:
     impl: RandomTranslation
@@ -32,7 +29,6 @@ MemorySystem:
     RowPolicy:
       impl: ClosedRowPolicy
       cap: 4
-    plugins:
 
   AddrMapper:
     impl: RoBaRaCoCh
