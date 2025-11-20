@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 
 namespace Ramulator
 {
@@ -64,7 +63,7 @@ struct TimingConsEntry
     {
         if (this->window < 0)
         {
-            spdlog::warn("[DRAM Spec] Timing constraint value smaller than 0!");
+            std::cout<<"Warning: [DRAM Spec] Timing constraint value smaller than 0!"<<std::endl;
             this->window = 0;
         }
     };

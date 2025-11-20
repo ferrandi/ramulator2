@@ -48,8 +48,10 @@ class LinearMapperBase : public IAddrMapper
         }
         catch (const std::out_of_range& r)
         {
-            throw std::runtime_error(fmt::format(
-                "Organization \"row\" not found in the spec, cannot use linear mapping!"));
+            // throw std::runtime_error(fmt::format(
+            //     "Organization \"row\" not found in the spec, cannot use linear mapping!"));
+            throw std::runtime_error(
+                "Organization \"row\" not found in the spec, cannot use linear mapping!");
         }
 
         // Assume column is always the last level

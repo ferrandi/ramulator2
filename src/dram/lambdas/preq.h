@@ -1,8 +1,6 @@
 #ifndef RAMULATOR_DRAM_LAMBDAS_PREQ_H
 #define RAMULATOR_DRAM_LAMBDAS_PREQ_H
 
-#include <spdlog/spdlog.h>
-
 namespace Ramulator
 {
 namespace Lambdas
@@ -33,7 +31,7 @@ int RequireRowOpen(typename T::Node* node, int cmd, const AddrVec_t& addr_vec, C
         return T::m_commands["ACT"];
     default:
     {
-        spdlog::error("[Preq::Bank] Invalid bank state for an RD/WR command!");
+        std::cout<<"Error: [Preq::Bank] Invalid bank state for an RD/WR command!"<<std::endl;
         std::exit(-1);
     }
     }
@@ -52,7 +50,7 @@ int RequireBankClosed(typename T::Node* node, int cmd, const AddrVec_t& addr_vec
         return cmd;
     default:
     {
-        spdlog::error("[Preq::Bank] Invalid bank state for an RD/WR command!");
+        std::cout<<"Error: [Preq::Bank] Invalid bank state for an RD/WR command!"<<std::endl;
         std::exit(-1);
     }
     }

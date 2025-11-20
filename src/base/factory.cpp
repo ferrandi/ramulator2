@@ -19,7 +19,9 @@ bool Factory::register_interface(std::string ifce_name, std::string ifce_desc)
     }
     else
     {
-        throw InitializationError("Interface class {} is already registered!", ifce_name);
+        throw InitializationError(
+            "Interface class " + ifce_name + " is already registered!"
+        );
     }
     return false;
 };
@@ -56,14 +58,19 @@ bool Factory::register_implementation(std::string ifce_name, std::string impl_na
         else
         {
             throw InitializationError(
-                "Interface class {} of implementation {} is already yet registered!", ifce_name,
-                impl_name);
+                "Interface class " + ifce_name +
+                " of implementation " + impl_name +
+                " is already yet registered!"
+            );
         }
     }
     else
     {
-        throw InitializationError("Interface class {} of implementation {} is not yet registered!",
-                                  ifce_name, impl_name);
+        throw InitializationError(
+            "Interface class " + ifce_name +
+            " of implementation " + impl_name +
+            " is not yet registered!"
+        );
     }
     return false;
 };
@@ -85,16 +92,19 @@ Implementation* Factory::create_implementation(std::string ifce_name, std::strin
         }
         else
         {
-            throw InitializationError("Trying to create an implementation \"{}\" of interface "
-                                      "\"{}\", but the implementation is not registered!",
-                                      impl_name, ifce_name);
+            throw InitializationError(
+                "Trying to create an implementation \"" + impl_name +
+                "\" of interface \"" + ifce_name +
+                "\", but the implementation is not registered!"
+            );
         }
     }
     else
     {
-        throw InitializationError("Trying to create an implementation of interface \"{}\", but the "
-                                  "interface is not registered!",
-                                  ifce_name);
+        throw InitializationError(
+            "Trying to create an implementation of interface \"" + ifce_name +
+            "\", but the interface is not registered!"
+        );
     }
     return nullptr;
 }
@@ -107,7 +117,9 @@ Implementation* Factory::create_implementation(std::string ifce_name, const YAML
 
     if (!config[ifce_name])
     {
-        throw InitializationError("Interface {} not found in the configuration!", ifce_name);
+        throw InitializationError(
+            "Interface " + ifce_name + " not found in the configuration!"
+        );
         return nullptr;
     }
 
@@ -120,7 +132,9 @@ Implementation* Factory::create_implementation(std::string ifce_name, const YAML
         std::string impl_name = ifce_config["impl"].as<std::string>("");
         if (impl_name == "")
         {
-            throw InitializationError("No implementation specified for interface {}!", ifce_name);
+            throw InitializationError(
+                "No implementation specified for interface " + ifce_name + "!"
+            );
             return nullptr;
         }
         if (const auto impl_it = impls_info.find(impl_name); impl_it != impls_info.end())
@@ -130,16 +144,19 @@ Implementation* Factory::create_implementation(std::string ifce_name, const YAML
         }
         else
         {
-            throw InitializationError("Trying to create an implementation \"{}\" of interface "
-                                      "\"{}\", but the implementation is not registered!",
-                                      impl_name, ifce_name);
+            throw InitializationError(
+                "Trying to create an implementation \"" + impl_name +
+                "\" of interface \"" + ifce_name +
+                "\", but the implementation is not registered!"
+            );
         }
     }
     else
     {
-        throw InitializationError("Trying to create an implementation of interface \"{}\", but the "
-                                  "interface is not registered!",
-                                  ifce_name);
+        throw InitializationError(
+            "Trying to create an implementation of interface \"" + ifce_name +
+            "\", but the interface is not registered!"
+        );
     }
     return nullptr;
 }
@@ -148,10 +165,10 @@ void Factory::dump()
 {
     for (const auto& [ifce_name, ifce_info] : m_registry)
     {
-        std::cout << fmt::format("Interface \"{}\":", ifce_name) << std::endl;
+        std::cout << "Interface \"" << ifce_name << "\":" << std::endl;
         for (const auto& [impl_name, impl_info] : ifce_info.impls_info)
         {
-            std::cout << fmt::format("    \"{}\"", impl_name) << std::endl;
+            std::cout << "    \"" << impl_name << "\"" << std::endl;
         }
     }
 }

@@ -3,25 +3,28 @@
 
 #include <stdexcept>
 #include <string>
-#include <string_view>
-
-#include <spdlog/spdlog.h>
+#include <utility>
 
 namespace Ramulator
 {
 
 struct InitializationError : public std::logic_error
 {
-    template <typename... Args>
-    InitializationError(fmt::format_string<Args...> format_str, Args&&... args)
-        : std::logic_error(fmt::format(format_str, std::forward<Args>(args)...)){};
+    explicit InitializationError(const std::string& message)
+        : std::logic_error(message) {}
+
+    // optional convenience overload for move semantics
+    explicit InitializationError(std::string&& message)
+        : std::logic_error(std::move(message)) {}
 };
 
 struct ConfigurationError : public std::runtime_error
 {
-    template <typename... Args>
-    ConfigurationError(fmt::format_string<Args...> format_str, Args&&... args)
-        : std::runtime_error(fmt::format(format_str, std::forward<Args>(args)...)){};
+    explicit ConfigurationError(const std::string& message)
+        : std::runtime_error(message) {}
+
+    explicit ConfigurationError(std::string&& message)
+        : std::runtime_error(std::move(message)) {}
 };
 
 } // namespace Ramulator

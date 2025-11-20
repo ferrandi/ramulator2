@@ -82,39 +82,39 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
         s_read_row_misses_per_core.resize(m_num_cores, 0);
         s_read_row_conflicts_per_core.resize(m_num_cores, 0);
 
-        register_stat(s_row_hits).name("row_hits_{}", m_channel_id);
-        register_stat(s_row_misses).name("row_misses_{}", m_channel_id);
-        register_stat(s_row_conflicts).name("row_conflicts_{}", m_channel_id);
-        register_stat(s_read_row_hits).name("read_row_hits_{}", m_channel_id);
-        register_stat(s_read_row_misses).name("read_row_misses_{}", m_channel_id);
-        register_stat(s_read_row_conflicts).name("read_row_conflicts_{}", m_channel_id);
-        register_stat(s_write_row_hits).name("write_row_hits_{}", m_channel_id);
-        register_stat(s_write_row_misses).name("write_row_misses_{}", m_channel_id);
-        register_stat(s_write_row_conflicts).name("write_row_conflicts_{}", m_channel_id);
+        register_stat(s_row_hits).name("row_hits_" + std::to_string(m_channel_id));
+        register_stat(s_row_misses).name("row_misses_" + std::to_string(m_channel_id));
+        register_stat(s_row_conflicts).name("row_conflicts_" + std::to_string(m_channel_id));
+        register_stat(s_read_row_hits).name("read_row_hits_" + std::to_string(m_channel_id));
+        register_stat(s_read_row_misses).name("read_row_misses_" + std::to_string(m_channel_id));
+        register_stat(s_read_row_conflicts).name("read_row_conflicts_" + std::to_string(m_channel_id));
+        register_stat(s_write_row_hits).name("write_row_hits_" + std::to_string(m_channel_id));
+        register_stat(s_write_row_misses).name("write_row_misses_" + std::to_string(m_channel_id));
+        register_stat(s_write_row_conflicts).name("write_row_conflicts_" + std::to_string(m_channel_id));
 
         for (size_t core_id = 0; core_id < m_num_cores; core_id++)
         {
-            register_stat(s_read_row_hits_per_core[core_id]).name("read_row_hits_core_{}", core_id);
+            register_stat(s_read_row_hits_per_core[core_id]).name("read_row_hits_core_" + std::to_string(core_id));
             register_stat(s_read_row_misses_per_core[core_id])
-                .name("read_row_misses_core_{}", core_id);
+                .name("read_row_misses_core_" + std::to_string(core_id));
             register_stat(s_read_row_conflicts_per_core[core_id])
-                .name("read_row_conflicts_core_{}", core_id);
+                .name("read_row_conflicts_core_" + std::to_string(core_id));
         }
 
-        register_stat(s_num_read_reqs).name("num_read_reqs_{}", m_channel_id);
-        register_stat(s_num_write_reqs).name("num_write_reqs_{}", m_channel_id);
-        register_stat(s_num_other_reqs).name("num_other_reqs_{}", m_channel_id);
-        register_stat(s_queue_len).name("queue_len_{}", m_channel_id);
-        register_stat(s_read_queue_len).name("read_queue_len_{}", m_channel_id);
-        register_stat(s_write_queue_len).name("write_queue_len_{}", m_channel_id);
-        register_stat(s_priority_queue_len).name("priority_queue_len_{}", m_channel_id);
-        register_stat(s_queue_len_avg).name("queue_len_avg_{}", m_channel_id);
-        register_stat(s_read_queue_len_avg).name("read_queue_len_avg_{}", m_channel_id);
-        register_stat(s_write_queue_len_avg).name("write_queue_len_avg_{}", m_channel_id);
-        register_stat(s_priority_queue_len_avg).name("priority_queue_len_avg_{}", m_channel_id);
+        register_stat(s_num_read_reqs).name("num_read_reqs_" + std::to_string(m_channel_id));
+        register_stat(s_num_write_reqs).name("num_write_reqs_" + std::to_string(m_channel_id));
+        register_stat(s_num_other_reqs).name("num_other_reqs_" + std::to_string(m_channel_id));
+        register_stat(s_queue_len).name("queue_len_" + std::to_string(m_channel_id));
+        register_stat(s_read_queue_len).name("read_queue_len_" + std::to_string(m_channel_id));
+        register_stat(s_write_queue_len).name("write_queue_len_" + std::to_string(m_channel_id));
+        register_stat(s_priority_queue_len).name("priority_queue_len_" + std::to_string(m_channel_id));
+        register_stat(s_queue_len_avg).name("queue_len_avg_" + std::to_string(m_channel_id));
+        register_stat(s_read_queue_len_avg).name("read_queue_len_avg_" + std::to_string(m_channel_id));
+        register_stat(s_write_queue_len_avg).name("write_queue_len_avg_" + std::to_string(m_channel_id));
+        register_stat(s_priority_queue_len_avg).name("priority_queue_len_avg_" + std::to_string(m_channel_id));
 
-        register_stat(s_read_latency).name("read_latency_{}", m_channel_id);
-        register_stat(s_avg_read_latency).name("avg_read_latency_{}", m_channel_id);
+        register_stat(s_read_latency).name("read_latency_" + std::to_string(m_channel_id));
+        register_stat(s_avg_read_latency).name("avg_read_latency_" + std::to_string(m_channel_id));
     };
 
     bool send(Request& req) override

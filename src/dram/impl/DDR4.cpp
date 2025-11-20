@@ -303,8 +303,10 @@ class DDR4 : public IDRAM, public Implementation
             }
             else
             {
-                throw ConfigurationError("Unrecognized organization preset \"{}\" in {}!",
-                                         *preset_name, get_name());
+                throw ConfigurationError(
+                    "Unrecognized organization preset \"" + *preset_name +
+                    "\" in " + get_name() + "!"
+                );
             }
         }
 
@@ -329,17 +331,21 @@ class DDR4 : public IDRAM, public Implementation
         }
 
         // Sanity check: is the calculated chip density the same as the provided one?
-        size_t _density = size_t(m_organization.count[m_levels["bankgroup"]]) *
-                          size_t(m_organization.count[m_levels["bank"]]) *
-                          size_t(m_organization.count[m_levels["row"]]) *
-                          size_t(m_organization.count[m_levels["column"]]) *
-                          size_t(m_organization.dq);
+        uint64_t _density = static_cast<uint64_t>(m_organization.count[m_levels["bankgroup"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["bank"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["row"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["column"]]) *
+                          static_cast<uint64_t>(m_organization.dq);
         _density >>= 20;
+
         if (m_organization.density != _density)
         {
             throw ConfigurationError(
-                "Calculated {} chip density {} Mb does not equal the provided density {} Mb!",
-                get_name(), _density, m_organization.density);
+                "Calculated " + get_name() +
+                " chip density " + std::to_string(_density) +
+                " Mb does not equal the provided density " + std::to_string(m_organization.density) +
+                " Mb!"
+            );
         }
     };
 
@@ -358,8 +364,10 @@ class DDR4 : public IDRAM, public Implementation
             }
             else
             {
-                throw ConfigurationError("Unrecognized timing preset \"{}\" in {}!", *preset_name,
-                                         get_name());
+                throw ConfigurationError(
+                    "Unrecognized timing preset \"" + *preset_name +
+                    "\" in " + get_name() + "!"
+                );
             }
         }
 
@@ -369,8 +377,9 @@ class DDR4 : public IDRAM, public Implementation
             if (preset_provided)
             {
                 throw ConfigurationError(
-                    "Cannot change the transfer rate of {} when using a speed preset !",
-                    get_name());
+                    "Cannot change the transfer rate of " + get_name() +
+                    " when using a speed preset!"
+                );
             }
             m_timing_vals("rate") = *dq;
         }
@@ -500,8 +509,11 @@ class DDR4 : public IDRAM, public Implementation
         {
             if (m_timing_vals(i) == -1)
             {
-                throw ConfigurationError("In \"{}\", timing {} is not specified!", get_name(),
-                                         m_timings(i));
+                throw ConfigurationError(
+                    "In \"" + get_name() +
+                    "\", timing " + std::string(m_timings(i)) +
+                    " is not specified!"
+                );
             }
         }
 
@@ -711,8 +723,10 @@ class DDR4 : public IDRAM, public Implementation
             }
             else
             {
-                throw ConfigurationError("Unrecognized voltage preset \"{}\" in {}!", *preset_name,
-                                         get_name());
+                throw ConfigurationError(
+                    "Unrecognized voltage preset \"" + *preset_name +
+                    "\" in " + get_name() + "!"
+                );
             }
         }
 
@@ -726,8 +740,10 @@ class DDR4 : public IDRAM, public Implementation
             }
             else
             {
-                throw ConfigurationError("Unrecognized current preset \"{}\" in {}!", *preset_name,
-                                         get_name());
+                throw ConfigurationError(
+                    "Unrecognized current preset \"" + *preset_name +
+                    "\" in " + get_name() + "!"
+                );
             }
         }
 
@@ -767,17 +783,17 @@ class DDR4 : public IDRAM, public Implementation
         for (auto& power_stat : m_power_stats)
         {
             register_stat(power_stat.total_background_energy)
-                .name("total_background_energy_rank{}", power_stat.rank_id);
+                .name("total_background_energy_rank" + std::to_string(power_stat.rank_id));
             register_stat(power_stat.total_cmd_energy)
-                .name("total_cmd_energy_rank{}", power_stat.rank_id);
-            register_stat(power_stat.total_energy).name("total_energy_rank{}", power_stat.rank_id);
+                .name("total_cmd_energy_rank" + std::to_string(power_stat.rank_id));
+            register_stat(power_stat.total_energy).name("total_energy_rank" + std::to_string(power_stat.rank_id));
             register_stat(power_stat.act_background_energy)
-                .name("act_background_energy_rank{}", power_stat.rank_id);
+                .name("act_background_energy_rank" + std::to_string(power_stat.rank_id));
             register_stat(power_stat.pre_background_energy)
-                .name("pre_background_energy_rank{}", power_stat.rank_id);
+                .name("pre_background_energy_rank" + std::to_string(power_stat.rank_id));
             register_stat(power_stat.active_cycles)
-                .name("active_cycles_rank{}", power_stat.rank_id);
-            register_stat(power_stat.idle_cycles).name("idle_cycles_rank{}", power_stat.rank_id);
+                .name("active_cycles_rank" + std::to_string(power_stat.rank_id));
+            register_stat(power_stat.idle_cycles).name("idle_cycles_rank" + std::to_string(power_stat.rank_id));
         }
     }
 

@@ -5,7 +5,6 @@
 #include <variant>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/exception.h"
@@ -61,16 +60,18 @@ template <typename T> class StatWrapper : public StatWrapperBase
         _name = name;
         if (auto it = _stats._registry.find(name); it != _stats._registry.end())
         {
-            throw ConfigurationError("Stat {} of implementation is already registered!", name);
+            throw ConfigurationError(
+                "Stat " + name + " of implementation is already registered!"
+            );
         }
         _stats._registry[name] = this;
         return *this;
     };
     template <typename... Args>
-    StatWrapper& name(fmt::format_string<Args...> format_str, Args&&... args)
+    StatWrapper& name(const std::string& str)
     {
-        return name(fmt::format(format_str, std::forward<Args>(args)...));
-    };
+        return name(str);
+    }
 
     StatWrapper& desc(std::string desc)
     {

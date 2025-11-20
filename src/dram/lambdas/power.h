@@ -1,7 +1,7 @@
 #ifndef RAMULATOR_DRAM_LAMBDAS_POWER_H
 #define RAMULATOR_DRAM_LAMBDAS_POWER_H
 
-#include <spdlog/spdlog.h>
+#include <cassert>
 
 namespace Ramulator
 {

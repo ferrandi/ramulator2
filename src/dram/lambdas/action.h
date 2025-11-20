@@ -1,8 +1,6 @@
 #ifndef RAMULATOR_DRAM_LAMBDAS_ACTION_H
 #define RAMULATOR_DRAM_LAMBDAS_ACTION_H
 
-#include <spdlog/spdlog.h>
-
 #include "dram/node.h"
 
 namespace Ramulator

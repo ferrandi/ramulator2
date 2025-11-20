@@ -36,7 +36,7 @@ class GenericDRAMSystem final : public IMemorySystem, public Implementation
         for (int i = 0; i < num_channels; i++)
         {
             IDRAMController* controller = create_child_ifce<IDRAMController>();
-            controller->m_impl->set_id(fmt::format("Channel {}", i));
+            controller->m_impl->set_id("Channel " + std::to_string(i));
             controller->m_channel_id = i;
             m_controllers.push_back(controller);
         }

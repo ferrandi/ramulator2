@@ -11,7 +11,6 @@ YAML::Node Config::parse_config_file(const std::string& path_str,
     fs::path path(path_str);
     if (!fs::exists(path))
     {
-        spdlog::error("Config file {} does not exist!", path_str);
         std::exit(-1);
     }
 
@@ -28,7 +27,6 @@ YAML::Node Config::Details::load_config_file(const std::string& path_str)
     fs::path path(path_str);
     if (!fs::exists(path))
     {
-        spdlog::error("Config file {} does not exist!", path_str);
         std::exit(-1);
     }
 
@@ -95,7 +93,7 @@ void Config::Details::override_configs(YAML::Node config, const std::vector<std:
 
         if (tokens.size() != 2)
         {
-            spdlog::warn("Unrecognized parameter override {}. Ignoring it.", param);
+            std::cout<<"Unrecognized parameter override "<<param<<" Ignoring it."<<std::endl;
         }
         else
         {
@@ -145,7 +143,7 @@ void Config::Details::override_configs(YAML::Node config, const std::vector<std:
             {
                 if (indices.size() > 1)
                 {
-                    spdlog::error("Nested sequence access is currently not supported!");
+                    std::cout<<"Nested sequence access is currently not supported!"<<std::endl;
                     std::exit(-1);
                 }
                 // Get the key of the map by removing the indices
@@ -157,7 +155,7 @@ void Config::Details::override_configs(YAML::Node config, const std::vector<std:
                 }
                 else if (node[_key].Type() != YAML::NodeType::Sequence)
                 {
-                    spdlog::error("Node {} is not a sequence!", _key);
+                    std::cout<<"Node "<<_key<<" is not a sequence!"<<std::endl;
                     std::exit(-1);
                 }
                 node.reset(node[_key]);
@@ -166,9 +164,7 @@ void Config::Details::override_configs(YAML::Node config, const std::vector<std:
                 {
                     if (i > node.size())
                     {
-                        spdlog::error(
-                            "Sequence access out of bound! To append elements to a sequence, use "
-                            "the index as one past the end of the sequence.");
+                        std::cout<<"Sequence access out of bound! To append elements to a sequence, use the index as one past the end of the sequence."<<std::endl;
                         std::exit(-1);
                     }
                     node.reset(node[i]);

@@ -41,17 +41,6 @@ FetchContent_MakeAvailable(yaml-cpp)
 include_directories(${yaml-cpp_SOURCE_DIR}/include)
 message("Done configuring yaml-cpp.")
 
-message("Configuring spdlog...")
-FetchContent_Declare(
-  spdlog                             
-  GIT_REPOSITORY https://github.com/gabime/spdlog.git
-  GIT_TAG        v1.11.0     
-  SOURCE_DIR     ${CMAKE_SOURCE_DIR}/ext/spdlog
-)
-FetchContent_MakeAvailable(spdlog)
-include_directories(${spdlog_SOURCE_DIR}/include)
-message("Done configuring spdlog.")
-
 message("Configuring argparse...")
 FetchContent_Declare(
     argparse
@@ -73,7 +62,6 @@ set_target_properties(ramulator PROPERTIES
 target_link_libraries(
   ramulator 
   PUBLIC yaml-cpp
-  PUBLIC spdlog
 )
 
 add_executable(ramulator-exe)

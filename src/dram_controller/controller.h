@@ -4,7 +4,6 @@
 #include <deque>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/base.h"

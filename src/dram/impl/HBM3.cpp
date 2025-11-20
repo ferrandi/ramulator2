@@ -189,8 +189,10 @@ class HBM3 : public IDRAM, public Implementation
             }
             else
             {
-                throw ConfigurationError("Unrecognized organization preset \"{}\" in {}!",
-                                         *preset_name, get_name());
+                throw ConfigurationError(
+                    "Unrecognized organization preset \"" + *preset_name +
+                    "\" in " + get_name() + "!"
+                );
             }
         }
 
@@ -215,18 +217,21 @@ class HBM3 : public IDRAM, public Implementation
         }
 
         // Sanity check: is the calculated channel density the same as the provided one?
-        size_t _density = size_t(m_organization.count[m_levels["pseudochannel"]]) *
-                          size_t(m_organization.count[m_levels["bankgroup"]]) *
-                          size_t(m_organization.count[m_levels["bank"]]) *
-                          size_t(m_organization.count[m_levels["row"]]) *
-                          size_t(m_organization.count[m_levels["column"]]) *
-                          size_t(m_organization.dq);
+        uint64_t _density = static_cast<uint64_t>(m_organization.count[m_levels["pseudochannel"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["bankgroup"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["bank"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["row"]]) *
+                          static_cast<uint64_t>(m_organization.count[m_levels["column"]]) *
+                          static_cast<uint64_t>(m_organization.dq);
         _density >>= 20;
         if (m_organization.density != _density)
         {
             throw ConfigurationError(
-                "Calculated {} channel density {} Mb does not equal the provided density {} Mb!",
-                get_name(), _density, m_organization.density);
+                "Calculated " + get_name() +
+                " chip density " + std::to_string(_density) +
+                " Mb does not equal the provided density " + std::to_string(m_organization.density) +
+                " Mb!"
+            );
         }
     };
 
@@ -245,8 +250,10 @@ class HBM3 : public IDRAM, public Implementation
             }
             else
             {
-                throw ConfigurationError("Unrecognized timing preset \"{}\" in {}!", *preset_name,
-                                         get_name());
+                throw ConfigurationError(
+                    "Unrecognized timing preset \"" + *preset_name +
+                    "\" in " + get_name() + "!"
+                );
             }
         }
 
@@ -256,8 +263,9 @@ class HBM3 : public IDRAM, public Implementation
             if (preset_provided)
             {
                 throw ConfigurationError(
-                    "Cannot change the transfer rate of {} when using a speed preset !",
-                    get_name());
+                    "Cannot change the transfer rate of " + get_name() +
+                    " when using a speed preset!"
+                );
             }
             m_timing_vals("rate") = *dq;
         }
@@ -322,8 +330,11 @@ class HBM3 : public IDRAM, public Implementation
         {
             if (m_timing_vals(i) == -1)
             {
-                throw ConfigurationError("In \"{}\", timing {} is not specified!", get_name(),
-                                         m_timings(i));
+                throw ConfigurationError(
+                    "In \"" + get_name() +
+                    "\", timing " + std::string(m_timings(i)) +
+                    " is not specified!"
+                );
             }
         }
 

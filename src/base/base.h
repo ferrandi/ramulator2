@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/clocked.h"
@@ -86,7 +85,8 @@ class Implementation
     virtual std::string get_ifce_name() const = 0;
     virtual std::string to_string() const
     {
-        return fmt::format("{}::to_string() placeholder", get_name());
+        // return fmt::format("{}::to_string() placeholder", get_name());
+        return get_name() + "::to_string() placeholder";
     };
 
     /**
@@ -122,8 +122,9 @@ class Implementation
         }
         else
         {
-            throw ConfigurationError("The parent is not an implementation of {}!",
-                                     Interface_t::get_name());
+            throw ConfigurationError(
+                "The parent is not an implementation of " + Interface_t::get_name() + "!"
+            );
             return nullptr;
         }
     }
@@ -146,7 +147,9 @@ class Implementation
         Implementation_t* impl = dynamic_cast<Implementation_t*>(ifce);
         if (impl == nullptr)
         {
-            throw ConfigurationError("Failed to convert  {}!", Interface_t::get_name());
+            throw ConfigurationError(
+                "Failed to convert " + Interface_t::get_name() + "!"
+            );
             return nullptr;
         }
         return impl;
@@ -254,7 +257,9 @@ class Implementation
         bool interface_registered = Factory::query_interface(ifce_name);
         if (!interface_registered)
         {
-            throw ConfigurationError("Interface {} is not registered!", ifce_name);
+            throw ConfigurationError(
+                "Interface " + ifce_name + " is not registered!"
+            );
             return nullptr;
         }
 
@@ -262,7 +267,9 @@ class Implementation
         const YAML::Node& child_config = config[ifce_name];
         if (!child_config)
         {
-            throw ConfigurationError("Interface {} is not found in the configuration!", ifce_name);
+            throw ConfigurationError(
+                "Interface " + ifce_name + " is not found in the configuration!"
+            );
             return nullptr;
         }
 
@@ -270,14 +277,17 @@ class Implementation
         std::string impl_name = child_config["impl"].as<std::string>("");
         if (impl_name == "")
         {
-            throw ConfigurationError("No implementation specified for interface {}!", ifce_name);
+            throw ConfigurationError(
+                "No implementation specified for interface " + ifce_name + "!"
+            );
             return nullptr;
         }
         if (desired_impl_name != "" && desired_impl_name != impl_name)
         {
             throw ConfigurationError(
-                "Specified implementation {} is different from the desired {}!", impl_name,
-                desired_impl_name);
+                "Specified implementation " + impl_name +
+                " is different from the desired " + desired_impl_name + "!"
+            );
             return nullptr;
         }
 
@@ -290,8 +300,10 @@ class Implementation
         }
         else
         {
-            throw ConfigurationError("Could not convert a pointer to {} to a pointer to {}!",
-                                     impl_name, ifce_name);
+            throw ConfigurationError(
+                "Could not convert a pointer to " + impl_name +
+                " to a pointer to " + ifce_name + "!"
+            );
             return nullptr;
         }
     }
@@ -406,7 +418,9 @@ template <class T> class TopLevel
             }
         }
 
-        throw ConfigurationError("Cannot get Interface {}", Ifce_t::get_name());
+        throw ConfigurationError(
+            "Cannot get Interface " + Ifce_t::get_name()
+        );
     }
 
     template <class Impl_t> Impl_t* get_impl(std::string desired_id = "")
@@ -426,7 +440,9 @@ template <class T> class TopLevel
                 }
             }
         }
-        throw ConfigurationError("Cannot get Implementation {}", Impl_t::m_name());
+        throw ConfigurationError(
+            "Cannot get Implementation " + Impl_t::m_name()
+        );
     }
 
   private:

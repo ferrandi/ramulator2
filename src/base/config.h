@@ -5,7 +5,6 @@
 #include <iostream>
 #include <regex>
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/base.h"

@@ -6,7 +6,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/debug.h"

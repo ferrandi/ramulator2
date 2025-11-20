@@ -1,7 +1,6 @@
 #ifndef RAMULATOR_ADDR_MAPPER_ADDR_MAPPER_H
 #define RAMULATOR_ADDR_MAPPER_ADDR_MAPPER_H
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/base.h"

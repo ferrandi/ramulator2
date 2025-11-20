@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 #include <yaml-cpp/yaml.h>
 
 #include "base/exception.h"
@@ -43,8 +42,8 @@ class _ParamGroupChainer
         else
         {
             throw ConfigurationError(
-                "ParamGroup \"{}\" is not specified for implementation \"{}\".", group_name,
-                _impl_name);
+                "Cannot set parameter group " + group_name + " for implementation " + _impl_name
+            );
         }
         return *this;
     };
@@ -66,8 +65,8 @@ class _ParamGroupChainer
         if (group_name == "impl" || group_name == "id")
         {
             throw ConfigurationError(
-                "In implementation \"{}\": ParamGroup name \"{}\" is reserved!", _impl_name,
-                group_name);
+                "In implementation \"" + _impl_name + "\": ParamGroup name \"" + group_name + "\" is reserved!"
+            );
         }
 
         _set_group(group_name);
@@ -106,9 +105,10 @@ template <typename T> class _ParamChainer
     {
         if (_default_val_set && _required)
         {
-            throw ConfigurationError("Param \"{}\" for implementation \"{}\" cannot both has a "
-                                     "default value and be required.",
-                                     _name_prefix + _name, _impl_name);
+            throw ConfigurationError(
+                "Param \"" + (_name_prefix + _name) + "\" for implementation \"" + _impl_name +
+                "\" cannot both have a default value and be required."
+            );
         }
 
         if (_config[_name])
@@ -119,15 +119,19 @@ template <typename T> class _ParamChainer
             }
             catch (const YAML::BadConversion& e)
             {
-                throw ConfigurationError("Failed to parse Param \"{}\" for implementation \"{}\".",
-                                         _name_prefix + _name, _impl_name);
+                throw ConfigurationError(
+                    "Failed to parse Param \"" + (_name_prefix + _name) +
+                    "\" for implementation \"" + _impl_name + "\"."
+                );
             }
         }
         else if (_required)
         {
             throw ConfigurationError(
-                "Param \"{}\" for implementation \"{}\" is required but not given.",
-                _name_prefix + _name, _impl_name);
+                "Param \"" + (_name_prefix + _name) +
+                "\" for implementation \"" + _impl_name +
+                "\" is required but not given."
+            );
         }
         else if (_default_val_set)
         {
@@ -197,8 +201,11 @@ class Params
         // Check for reserved key names
         if (param_name == "impl" || param_name == "id")
         {
-            throw ConfigurationError("In implementation \"{}\": Param name \"{}\" is reserved!",
-                                     m_impl_name, param_name);
+            throw ConfigurationError(
+                "In implementation \"" + m_impl_name +
+                "\": Param name \"" + param_name +
+                "\" is reserved!"
+            );
         }
 
         _add_name(param_name);
@@ -213,8 +220,10 @@ class Params
         if (group_name == "impl" || group_name == "id")
         {
             throw ConfigurationError(
-                "In implementation \"{}\": ParamGroup name \"{}\" is reserved!", m_impl_name,
-                group_name);
+                "In implementation \"" + m_impl_name +
+                "\": ParamGroup name \"" + group_name +
+                "\" is reserved!"
+            );
         }
 
         _ParamGroupChainer _pg(m_config, m_impl_name, *this);
@@ -228,8 +237,10 @@ class Params
         if (auto it = m_registry.find(param_name); it != m_registry.end())
         {
             throw InitializationError(
-                "In implementation {}, param name \"{}\" is already registered.", m_impl_name,
-                param_name);
+                "In implementation " + m_impl_name +
+                ", param name \"" + param_name +
+                "\" is already registered."
+            );
         }
         else
         {
@@ -247,9 +258,11 @@ class Params
         }
         else
         {
-            throw InitializationError("In implementation {}, param name \"{}\" is not yet "
-                                      "registered but a description is being added to it.",
-                                      m_impl_name, param_name);
+            throw InitializationError(
+                "In implementation " + m_impl_name +
+                ", param name \"" + param_name +
+                "\" is not yet registered but a description is being added to it."
+            );
         }
     }
 };
@@ -261,8 +274,11 @@ template <typename T> _ParamChainer<T> _ParamGroupChainer::param(std::string par
     // Check for reserved key names
     if (param_name == "impl" || param_name == "id")
     {
-        throw ConfigurationError("In implementation \"{}\": Param name \"{}\" is reserved!",
-                                 _impl_name, prefixed_param_name);
+        throw ConfigurationError(
+            "In implementation \"" + _impl_name +
+            "\": Param name \"" + prefixed_param_name +
+            "\" is reserved!"
+        );
     }
 
     _params._add_name(prefixed_param_name);

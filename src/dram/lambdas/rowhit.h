@@ -1,8 +1,6 @@
 #ifndef RAMULATOR_DRAM_LAMBDAS_ROWHIT_H
 #define RAMULATOR_DRAM_LAMBDAS_ROWHIT_H
 
-#include <spdlog/spdlog.h>
-
 namespace Ramulator
 {
 namespace Lambdas
@@ -30,7 +28,7 @@ template <class T> bool RDWR(typename T::Node* node, int cmd, int target_id, Clk
         return false;
     default:
     {
-        spdlog::error("[RowHit::Bank] Invalid bank state for an RD/WR command!");
+        std::cout<<"Error: [RowHit::Bank] Invalid bank state for an RD/WR command!"<<std::endl;
         std::exit(-1);
     }
     }
