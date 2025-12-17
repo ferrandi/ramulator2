@@ -11,13 +11,13 @@
 class DummyLogger {
   public:
     template <typename... Args>
-    void info(const std::string&, Args&&...) {}
+    void log_info(const std::string&, Args&&...) {}
     template <typename... Args>
-    void warn(const std::string&, Args&&...) {}
+    void log_warn(const std::string&, Args&&...) {}
     template <typename... Args>
-    void error(const std::string&, Args&&...) {}
+    void log_error(const std::string&, Args&&...) {}
     template <typename... Args>
-    void debug(const std::string&, Args&&...) {}
+    void log_debug(const std::string&, Args&&...) {}
 };
 
 // TODO: Better Logging interface. Put logging methods into Implementation base class?

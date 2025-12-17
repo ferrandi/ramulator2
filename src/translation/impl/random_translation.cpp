@@ -77,7 +77,7 @@ class RandomTranslation : public ITranslation, public Implementation
                     ppn_to_replace = m_allocator_rng() % m_num_pages;
                 }
                 core_translation[vpn] = ppn_to_replace;
-                m_logger->warn("Swapping out PPN {} for Addr {}, VPN {}.", ppn_to_replace, req.addr,
+                m_logger->log_warn("Swapping out PPN {} for Addr {}, VPN {}.", ppn_to_replace, req.addr,
                                vpn);
             }
             else
