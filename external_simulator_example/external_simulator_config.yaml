@@ -1,0 +1,46 @@
+# Configuration for External Simulator Example with Ramulator2
+# This demonstrates how to configure Ramulator2 as a memory system library
+
+Frontend:
+  impl: GEM5
+
+MemorySystem:
+  impl: GenericDRAM
+  clock_ratio: 3
+  DRAM:
+    impl: DDR4
+
+    # DDR4 timing parameters
+    org:
+      preset: DDR4_8Gb_x8      # 8Gb DDR4 configuration
+      channel: 1
+      rank: 2
+    timing:
+      preset: DDR4_2400R       # DDR4-2400 timings
+
+  # Memory controller configuration
+  Controller:
+    impl: Generic
+    Scheduler:
+      impl: FRFCFS           # First-Ready First-Come-First-Served
+    RefreshManager:
+      impl: AllBank
+    RowPolicy:
+      impl: ClosedRowPolicy
+      cap: 4
+    plugins:
+
+  # Address mapping
+  AddrMapper:
+    impl: RoBaRaCoCh         # Row-Bank-Rank-Column-Channel mapping
+
+# Simulation parameters
+warmup_insts: 0
+expected_limit_insts: 1000000
+
+# Statistics output
+stats_prefix: "external_simulator"
+dump_trace: false
+
+# Debug options (set to true for more verbose output)
+debug: false

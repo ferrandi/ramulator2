@@ -1,0 +1,189 @@
+=== Minimal Interleaved Ramulator2 Example ===
+Loading config: config.yaml
+Ramulator2 initialized successfully
+
+Starting interleaved simulation...
+Will issue 10 requests with 500 cycle intervals
+
+Cycle 1: Issued READ request #1 to addr 0x0
+Completed READ request #1 to addr 0x0 (latency: 36 cycles)
+Cycle 501: Issued READ request #2 to addr 0x1000
+Completed READ request #2 to addr 0x1000 (latency: 20 cycles)
+Cycle 1001: Issued WRITE request #3 to addr 0x2000
+Cycle 1501: Issued READ request #4 to addr 0x3000
+Completed READ request #4 to addr 0x3000 (latency: 20 cycles)
+Cycle 2001: Issued READ request #5 to addr 0x4000
+Completed READ request #5 to addr 0x4000 (latency: 36 cycles)
+Cycle 2501: Issued WRITE request #6 to addr 0x5000
+Cycle 3001: Issued READ request #7 to addr 0x6000
+Completed READ request #7 to addr 0x6000 (latency: 36 cycles)
+Cycle 3501: Issued READ request #8 to addr 0x7000
+Completed READ request #8 to addr 0x7000 (latency: 20 cycles)
+Cycle 4001: Issued WRITE request #9 to addr 0x8000
+Cycle 4501: Issued READ request #10 to addr 0x9000
+Completed READ request #10 to addr 0x9000 (latency: 20 cycles)
+Cycle 5000: Issued 10/10, Completed 7, Pending 3
+Cycle 10000: Issued 10/10, Completed 7, Pending 3
+Cycle 15000: Issued 10/10, Completed 7, Pending 3
+Cycle 20000: Issued 10/10, Completed 7, Pending 3
+Cycle 25000: Issued 10/10, Completed 7, Pending 3
+Cycle 30000: Issued 10/10, Completed 7, Pending 3
+Cycle 35000: Issued 10/10, Completed 7, Pending 3
+Cycle 40000: Issued 10/10, Completed 7, Pending 3
+Cycle 45000: Issued 10/10, Completed 7, Pending 3
+Cycle 50000: Issued 10/10, Completed 7, Pending 3
+Cycle 55000: Issued 10/10, Completed 7, Pending 3
+Cycle 60000: Issued 10/10, Completed 7, Pending 3
+Cycle 65000: Issued 10/10, Completed 7, Pending 3
+Cycle 70000: Issued 10/10, Completed 7, Pending 3
+Cycle 75000: Issued 10/10, Completed 7, Pending 3
+Cycle 80000: Issued 10/10, Completed 7, Pending 3
+Cycle 85000: Issued 10/10, Completed 7, Pending 3
+Cycle 90000: Issued 10/10, Completed 7, Pending 3
+Cycle 95000: Issued 10/10, Completed 7, Pending 3
+Cycle 100000: Issued 10/10, Completed 7, Pending 3
+Cycle 105000: Issued 10/10, Completed 7, Pending 3
+Cycle 110000: Issued 10/10, Completed 7, Pending 3
+Cycle 115000: Issued 10/10, Completed 7, Pending 3
+Cycle 120000: Issued 10/10, Completed 7, Pending 3
+Cycle 125000: Issued 10/10, Completed 7, Pending 3
+Cycle 130000: Issued 10/10, Completed 7, Pending 3
+Cycle 135000: Issued 10/10, Completed 7, Pending 3
+Cycle 140000: Issued 10/10, Completed 7, Pending 3
+Cycle 145000: Issued 10/10, Completed 7, Pending 3
+Cycle 150000: Issued 10/10, Completed 7, Pending 3
+Cycle 155000: Issued 10/10, Completed 7, Pending 3
+Cycle 160000: Issued 10/10, Completed 7, Pending 3
+Cycle 165000: Issued 10/10, Completed 7, Pending 3
+Cycle 170000: Issued 10/10, Completed 7, Pending 3
+Cycle 175000: Issued 10/10, Completed 7, Pending 3
+Cycle 180000: Issued 10/10, Completed 7, Pending 3
+Cycle 185000: Issued 10/10, Completed 7, Pending 3
+Cycle 190000: Issued 10/10, Completed 7, Pending 3
+Cycle 195000: Issued 10/10, Completed 7, Pending 3
+Cycle 200000: Issued 10/10, Completed 7, Pending 3
+Cycle 205000: Issued 10/10, Completed 7, Pending 3
+Cycle 210000: Issued 10/10, Completed 7, Pending 3
+Cycle 215000: Issued 10/10, Completed 7, Pending 3
+Cycle 220000: Issued 10/10, Completed 7, Pending 3
+Cycle 225000: Issued 10/10, Completed 7, Pending 3
+Cycle 230000: Issued 10/10, Completed 7, Pending 3
+Cycle 235000: Issued 10/10, Completed 7, Pending 3
+Cycle 240000: Issued 10/10, Completed 7, Pending 3
+Cycle 245000: Issued 10/10, Completed 7, Pending 3
+Cycle 250000: Issued 10/10, Completed 7, Pending 3
+Cycle 255000: Issued 10/10, Completed 7, Pending 3
+Cycle 260000: Issued 10/10, Completed 7, Pending 3
+Cycle 265000: Issued 10/10, Completed 7, Pending 3
+Cycle 270000: Issued 10/10, Completed 7, Pending 3
+Cycle 275000: Issued 10/10, Completed 7, Pending 3
+Cycle 280000: Issued 10/10, Completed 7, Pending 3
+Cycle 285000: Issued 10/10, Completed 7, Pending 3
+Cycle 290000: Issued 10/10, Completed 7, Pending 3
+Cycle 295000: Issued 10/10, Completed 7, Pending 3
+Cycle 300000: Issued 10/10, Completed 7, Pending 3
+Cycle 305000: Issued 10/10, Completed 7, Pending 3
+Cycle 310000: Issued 10/10, Completed 7, Pending 3
+Cycle 315000: Issued 10/10, Completed 7, Pending 3
+Cycle 320000: Issued 10/10, Completed 7, Pending 3
+Cycle 325000: Issued 10/10, Completed 7, Pending 3
+Cycle 330000: Issued 10/10, Completed 7, Pending 3
+Cycle 335000: Issued 10/10, Completed 7, Pending 3
+Cycle 340000: Issued 10/10, Completed 7, Pending 3
+Cycle 345000: Issued 10/10, Completed 7, Pending 3
+Cycle 350000: Issued 10/10, Completed 7, Pending 3
+Cycle 355000: Issued 10/10, Completed 7, Pending 3
+Cycle 360000: Issued 10/10, Completed 7, Pending 3
+Cycle 365000: Issued 10/10, Completed 7, Pending 3
+Cycle 370000: Issued 10/10, Completed 7, Pending 3
+Cycle 375000: Issued 10/10, Completed 7, Pending 3
+Cycle 380000: Issued 10/10, Completed 7, Pending 3
+Cycle 385000: Issued 10/10, Completed 7, Pending 3
+Cycle 390000: Issued 10/10, Completed 7, Pending 3
+Cycle 395000: Issued 10/10, Completed 7, Pending 3
+Cycle 400000: Issued 10/10, Completed 7, Pending 3
+Cycle 405000: Issued 10/10, Completed 7, Pending 3
+Cycle 410000: Issued 10/10, Completed 7, Pending 3
+Cycle 415000: Issued 10/10, Completed 7, Pending 3
+Cycle 420000: Issued 10/10, Completed 7, Pending 3
+Cycle 425000: Issued 10/10, Completed 7, Pending 3
+Cycle 430000: Issued 10/10, Completed 7, Pending 3
+Cycle 435000: Issued 10/10, Completed 7, Pending 3
+Cycle 440000: Issued 10/10, Completed 7, Pending 3
+Cycle 445000: Issued 10/10, Completed 7, Pending 3
+Cycle 450000: Issued 10/10, Completed 7, Pending 3
+Cycle 455000: Issued 10/10, Completed 7, Pending 3
+Cycle 460000: Issued 10/10, Completed 7, Pending 3
+Cycle 465000: Issued 10/10, Completed 7, Pending 3
+Cycle 470000: Issued 10/10, Completed 7, Pending 3
+Cycle 475000: Issued 10/10, Completed 7, Pending 3
+Cycle 480000: Issued 10/10, Completed 7, Pending 3
+Cycle 485000: Issued 10/10, Completed 7, Pending 3
+Cycle 490000: Issued 10/10, Completed 7, Pending 3
+Cycle 495000: Issued 10/10, Completed 7, Pending 3
+Cycle 500000: Issued 10/10, Completed 7, Pending 3
+Reached cycle limit, stopping simulation
+
+=== Simulation Results ===
+Total cycles: 500001
+Requests issued: 10/10
+Requests completed: 7
+Requests still pending: 3
+Some requests did not complete
+Frontend:
+  impl: GEM5
+
+MemorySystem:
+  impl: GenericDRAM
+  total_num_other_requests: 0
+  total_num_write_requests: 3
+  total_num_read_requests: 7
+  memory_system_cycles: 500001
+  DRAM:
+    impl: DDR4
+  AddrMapper:
+    impl: RoBaRaCoCh
+
+
+  Controller:
+    impl: Generic
+    id: Channel 0
+    avg_read_latency_0: 27.8571434
+    read_queue_len_avg_0: 0.000293999416
+    write_queue_len_0: 3
+    queue_len_0: 166
+    num_other_reqs_0: 0
+    num_write_reqs_0: 3
+    read_latency_0: 195
+    priority_queue_len_avg_0: 3.19999344e-05
+    row_hits_0: 5
+    priority_queue_len_0: 16
+    row_misses_0: 5
+    row_conflicts_0: 0
+    read_row_misses_0: 3
+    queue_len_avg_0: 0.000331999327
+    read_row_conflicts_core_0: 0
+    read_row_hits_0: 4
+    write_queue_len_avg_0: 5.99998793e-06
+    read_row_conflicts_0: 0
+    write_row_misses_0: 2
+    write_row_conflicts_0: 0
+    read_queue_len_0: 147
+    write_row_hits_0: 1
+    read_row_hits_core_0: 4
+    read_row_misses_core_0: 3
+    num_read_reqs_0: 7
+    Scheduler:
+      impl: FRFCFS
+    RefreshManager:
+      impl: AllBank
+
+
+    RowPolicy:
+      impl: ClosedRowPolicy
+      num_close_reqs: 0
+
+
+
+
+=== Example completed ===

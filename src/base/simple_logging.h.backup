@@ -1,0 +1,154 @@
+#ifndef RAMULATOR_SIMPLE_LOGGING_H
+#define RAMULATOR_SIMPLE_LOGGING_H
+
+// Simple logging replacement for spdlog
+// Provides basic logging functionality without external dependencies
+
+#include <iostream>
+#include <memory>
+#include <string>
+#include <cstdio>
+#include <sstream>
+#include <type_traits>
+#include <utility>
+
+namespace Ramulator {
+
+// Simple logger class to replace spdlog::logger
+class SimpleLogger {
+private:
+    std::string name_;
+
+public:
+    SimpleLogger(const std::string& name) : name_(name) {}
+
+    template<typename... Args>
+    void debug(const std::string& format, Args&&... args) {
+        log("DEBUG", format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void info(const std::string& format, Args&&... args) {
+        log("INFO", format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void warn(const std::string& format, Args&&... args) {
+        log("WARN", format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void error(const std::string& format, Args&&... args) {
+        log("ERROR", format, std::forward<Args>(args)...);
+    }
+
+    void set_pattern(const std::string&) {
+        // Ignore pattern setting for simple logger
+    }
+
+    void set_level(int) {
+        // Ignore level setting for simple logger
+    }
+
+private:
+    // Helper to convert arguments to string representations
+    template<typename T>
+    std::string arg_to_string(T&& value) {
+        if constexpr (std::is_arithmetic_v<std::decay_t<T>>) {
+            return std::to_string(value);
+        } else if constexpr (std::is_convertible_v<T, std::string>) {
+            return std::string(value);
+        } else {
+            std::ostringstream oss;
+            oss << value;
+            return oss.str();
+        }
+    }
+
+    template<typename... Args>
+    void log(const char* level, const std::string& format, Args&&... args) {
+        std::fprintf(stderr, "[%s][%s] ", level, name_.c_str());
+        if constexpr (sizeof...(args) == 0) {
+            std::fprintf(stderr, "%s\n", format.c_str());
+        } else {
+            // Simple approach: just output the message with arguments as strings
+            std::string msg = format;
+            ((msg += " " + arg_to_string(args)), ...);
+            std::fprintf(stderr, "%s\n", msg.c_str());
+        }
+    }
+};
+
+using logger_ptr = std::shared_ptr<SimpleLogger>;
+
+// Simple replacement functions for spdlog namespace functions
+namespace spdlog {
+    inline logger_ptr stdout_color_st(const std::string& name) {
+        return std::make_shared<SimpleLogger>(name);
+    }
+
+    inline logger_ptr get(const std::string& name) {
+        return std::make_shared<SimpleLogger>(name);
+    }
+
+    namespace level {
+        enum level_enum { debug = 0, info = 1, warn = 2, err = 3 };
+    }
+}
+
+} // namespace Ramulator
+
+// Simple fmt replacement functions
+namespace fmt {
+    // Helper to convert various types to string
+    template<typename T>
+    std::string to_string_helper(T&& value) {
+        if constexpr (std::is_arithmetic_v<std::decay_t<T>>) {
+            return std::to_string(value);
+        } else if constexpr (std::is_convertible_v<T, std::string>) {
+            return std::string(value);
+        } else {
+            std::ostringstream oss;
+            oss << value;
+            return oss.str();
+        }
+    }
+
+    // Simple format function replacement
+    template<typename... Args>
+    std::string format(const std::string& format_str, Args&&... args) {
+        if constexpr (sizeof...(args) == 0) {
+            return format_str;
+        } else {
+            // Simple approach: use sprintf for basic formatting
+            constexpr size_t buffer_size = 1024;
+            char buffer[buffer_size];
+            std::snprintf(buffer, buffer_size, format_str.c_str(), std::forward<Args>(args)...);
+            return std::string(buffer);
+        }
+    }
+
+    // Simple join function for containers
+    template<typename Container>
+    std::string join(const Container& container, const std::string& separator) {
+        if (container.empty()) {
+            return "";
+        }
+
+        std::ostringstream oss;
+        auto it = container.begin();
+        oss << *it;
+
+        for (++it; it != container.end(); ++it) {
+            oss << separator << *it;
+        }
+
+        return oss.str();
+    }
+
+    // Dummy format_string template for compatibility
+    template<typename... Args>
+    using format_string = const char*;
+}
+
+#endif // RAMULATOR_SIMPLE_LOGGING_H
