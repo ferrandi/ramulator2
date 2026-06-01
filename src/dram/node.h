@@ -6,8 +6,10 @@
 #include <deque>
 #include <functional>
 #include <concepts>
+#include <cstdio>
 
 #include "base/type.h"
+#include "base/simple_logging.h"
 #include "dram/spec.h"
 
 namespace Ramulator {
@@ -73,17 +75,27 @@ struct DRAMNodeBase {
       // Recursively construct next levels
       int next_level = level + 1;
       int last_level = T::m_levels["row"];
+      RAMULATOR_DBG_PRINT("[NODE-INIT] level=%d, next_level=%d, last_level=%d\n", level, next_level, last_level);
       if (next_level == last_level) {
+        RAMULATOR_DBG_PRINT("[NODE-INIT] Reached row level, stopping recursion\n");
         return;
       } else {
         int next_level_size = m_spec->m_organization.count[next_level];
+        RAMULATOR_DBG_PRINT("[NODE-INIT] next_level_size=%d\n", next_level_size);
         if (next_level_size == 0) {
           return;
         } else {
           for (int i = 0; i < next_level_size; i++) {
             NodeType* child = new NodeType(spec, static_cast<NodeType*>(this), next_level, i);
+            RAMULATOR_DBG_PRINT("[NODE-INIT] Created child %d at level %d, pointer=%p\n", i, next_level, (void*)child);
             static_cast<NodeType*>(this)->m_child_nodes.push_back(child);
+            RAMULATOR_DBG_PRINT("[NODE-INIT] After push_back, child_nodes.size()=%zu, child_nodes[%d]=%p, data()=%p\n",
+                   static_cast<NodeType*>(this)->m_child_nodes.size(), i,
+                   (void*)static_cast<NodeType*>(this)->m_child_nodes[i],
+                   (void*)static_cast<NodeType*>(this)->m_child_nodes.data());
           }
+          RAMULATOR_DBG_PRINT("[NODE-INIT] this=%p level=%d complete, m_child_nodes.data()=%p\n",
+                 (void*)this, level, (void*)static_cast<NodeType*>(this)->m_child_nodes.data());
         }
       }
     };
@@ -188,20 +200,41 @@ struct DRAMNodeBase {
     };
 
     int get_preq_command(int command, const AddrVec_t& addr_vec, Clk_t m_clk) {
+      RAMULATOR_DBG_PRINT("[NODE] get_preq_command: level=%d, command=%d, addr_vec.size()=%zu\n", m_level, command, addr_vec.size());
       int child_id = addr_vec[m_level + 1];
+      RAMULATOR_DBG_PRINT("[NODE] child_id from addr_vec[%d]=%d\n", m_level + 1, child_id);
       if (m_spec->m_preqs[m_level][command]) {
+        RAMULATOR_DBG_PRINT("[NODE] checking preq for level %d, command %d\n", m_level, command);
         int preq_cmd = m_spec->m_preqs[m_level][command](static_cast<NodeType*>(this), command, addr_vec, m_clk);
+        RAMULATOR_DBG_PRINT("[NODE] preq_cmd=%d\n", preq_cmd);
         if (preq_cmd != -1) {
           // stop recursion: there is a prerequisite at this level
-          return preq_cmd; 
+          return preq_cmd;
         }
       }
 
+      RAMULATOR_DBG_PRINT("[NODE] m_child_nodes.size()=%zu, this=%p\n", m_child_nodes.size(), (void*)this);
+      RAMULATOR_DBG_PRINT("[NODE] m_child_nodes data()=%p\n", (void*)m_child_nodes.data());
       if (!m_child_nodes.size()) {
         // stop recursion: there were no prequisites at any level
-        return command; 
+        return command;
       }
 
+      // Print all children pointers for debugging
+      for (size_t i = 0; i < m_child_nodes.size(); i++) {
+        RAMULATOR_DBG_PRINT("[NODE] m_child_nodes[%zu]=%p\n", i, (void*)m_child_nodes[i]);
+      }
+      RAMULATOR_DBG_PRINT("[NODE] recursing to child_nodes[%d] of %zu\n", child_id, m_child_nodes.size());
+      if (child_id < 0 || child_id >= (int)m_child_nodes.size()) {
+        RAMULATOR_DBG_PRINT("[NODE] ERROR: child_id %d out of bounds [0, %zu)\n", child_id, m_child_nodes.size());
+        return -1;
+      }
+      RAMULATOR_DBG_PRINT("[NODE] child_nodes[%d] pointer=%p\n", child_id, (void*)m_child_nodes[child_id]);
+      if (m_child_nodes[child_id] == nullptr) {
+        RAMULATOR_DBG_PRINT("[NODE] ERROR: child_nodes[%d] is nullptr!\n", child_id);
+        return -1;
+      }
+      RAMULATOR_DBG_PRINT("[NODE] calling child->get_preq_command...\n");
       // recursively get_preq_command at my child
       return m_child_nodes[child_id]->get_preq_command(command, addr_vec, m_clk);
     };

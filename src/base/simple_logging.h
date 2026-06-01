@@ -10,6 +10,15 @@
 #include <cstdio>
 #include <sstream>
 
+// Debug output control - define RAMULATOR_DEBUG to enable verbose debug output
+// To enable: add -DRAMULATOR_DEBUG to CMAKE_CXX_FLAGS or uncomment the line below
+// #define RAMULATOR_DEBUG
+#ifdef RAMULATOR_DEBUG
+  #define RAMULATOR_DBG_PRINT(...) do { printf(__VA_ARGS__); fflush(stdout); } while(0)
+#else
+  #define RAMULATOR_DBG_PRINT(...) do {} while(0)
+#endif
+
 // Temporarily disable debug/error/info/warn macros from MDPI
 #ifdef debug
 #pragma push_macro("debug")
@@ -77,8 +86,24 @@ public:
         std::fprintf(stderr, "[INFO][%s] %s\n", name_.c_str(), format.c_str());
     }
 
+    template<typename T1>
+    void debug(const std::string& format, T1 arg1) {
+        std::fprintf(stderr, "[DEBUG][%s] %s\n", name_.c_str(), format.c_str());
+    }
+
+    template<typename T1, typename T2>
+    void debug(const std::string& format, T1 arg1, T2 arg2) {
+        std::fprintf(stderr, "[DEBUG][%s] %s\n", name_.c_str(), format.c_str());
+    }
+
     template<typename T1, typename T2, typename T3>
     void debug(const std::string& format, T1 arg1, T2 arg2, T3 arg3) {
+        std::fprintf(stderr, "[DEBUG][%s] %s\n", name_.c_str(), format.c_str());
+    }
+
+    // Variadic template to handle any number of arguments
+    template<typename... Args>
+    void debug(const std::string& format, Args... args) {
         std::fprintf(stderr, "[DEBUG][%s] %s\n", name_.c_str(), format.c_str());
     }
 
@@ -179,6 +204,41 @@ namespace fmt {
                 pos = result.find("{}");
                 if (pos != std::string::npos) {
                     result.replace(pos, 2, to_string_helper(arg3));
+                }
+            }
+        }
+        return result;
+    }
+
+    // Format function with seven arguments (for DDR3 density error with debug info)
+    template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7>
+    std::string format(const std::string& format_str, const T1& arg1, const T2& arg2, const T3& arg3, const T4& arg4, const T5& arg5, const T6& arg6, const T7& arg7) {
+        std::string result = format_str;
+        size_t pos = result.find("{}");
+        if (pos != std::string::npos) {
+            result.replace(pos, 2, to_string_helper(arg1));
+            pos = result.find("{}");
+            if (pos != std::string::npos) {
+                result.replace(pos, 2, to_string_helper(arg2));
+                pos = result.find("{}");
+                if (pos != std::string::npos) {
+                    result.replace(pos, 2, to_string_helper(arg3));
+                    pos = result.find("{}");
+                    if (pos != std::string::npos) {
+                        result.replace(pos, 2, to_string_helper(arg4));
+                        pos = result.find("{}");
+                        if (pos != std::string::npos) {
+                            result.replace(pos, 2, to_string_helper(arg5));
+                            pos = result.find("{}");
+                            if (pos != std::string::npos) {
+                                result.replace(pos, 2, to_string_helper(arg6));
+                                pos = result.find("{}");
+                                if (pos != std::string::npos) {
+                                    result.replace(pos, 2, to_string_helper(arg7));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

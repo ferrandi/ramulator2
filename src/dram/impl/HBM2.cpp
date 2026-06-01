@@ -200,19 +200,22 @@ class HBM2 : public IDRAM, public Implementation {
       }
 
       // Sanity check: is the calculated channel density the same as the provided one?
-      size_t _density = size_t(m_organization.count[m_levels["pseudochannel"]]) *
-                        size_t(m_organization.count[m_levels["bankgroup"]]) *
-                        size_t(m_organization.count[m_levels["bank"]]) *
-                        size_t(m_organization.count[m_levels["row"]]) *
-                        size_t(m_organization.count[m_levels["column"]]) *
-                        size_t(m_organization.dq);
+      size_t pch = size_t(m_organization.count[m_levels["pseudochannel"]]);
+      size_t bg = size_t(m_organization.count[m_levels["bankgroup"]]);
+      size_t ba = size_t(m_organization.count[m_levels["bank"]]);
+      size_t ro = size_t(m_organization.count[m_levels["row"]]);
+      size_t co = size_t(m_organization.count[m_levels["column"]]);
+      size_t dq = size_t(m_organization.dq);
+      // Use 64-bit arithmetic to avoid overflow in 32-bit builds
+      uint64_t _density = uint64_t(pch) * uint64_t(bg) * uint64_t(ba) * uint64_t(ro) * uint64_t(co) * uint64_t(dq);
       _density >>= 20;
       if (m_organization.density != _density) {
         throw ConfigurationError(
-            "Calculated {} channel density {} Mb does not equal the provided density {} Mb!", 
+            "Calculated {} density {} Mb != provided {} Mb! (bg={} ba={} ro={} co={} dq={})",
             get_name(),
-            _density, 
-            m_organization.density
+            _density,
+            m_organization.density,
+            bg, ba, ro, co, dq
         );
       }
 

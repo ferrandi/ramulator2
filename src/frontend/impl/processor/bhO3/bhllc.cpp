@@ -325,13 +325,18 @@ void BHO3LLC::connect_memory_system(IMemorySystem* memory_system) {
   IDRAM* dram = static_cast<IBHMemorySystem*>(memory_system)->get_dram();
 
   m_rank_level = dram->m_levels("rank");
-  m_bank_group_level = dram->m_levels("bankgroup");
+  // DDR3 doesn't have bank groups, so check if it exists first
+  if (dram->get_level_size("bankgroup") != -1) {
+    m_bank_group_level = dram->m_levels("bankgroup");
+  } else {
+    m_bank_group_level = -1;  // Mark as not present
+  }
   m_bank_level = dram->m_levels("bank");
   m_row_level = dram->m_levels("row");
 
   m_num_ranks = dram->get_level_size("rank");
-  m_num_banks_per_rank = dram->get_level_size("bankgroup") == -1 ? 
-                          dram->get_level_size("bank") : 
+  m_num_banks_per_rank = dram->get_level_size("bankgroup") == -1 ?
+                          dram->get_level_size("bank") :
                           dram->get_level_size("bankgroup") * dram->get_level_size("bank");
   m_num_rows_per_bank = dram->get_level_size("row");
 }

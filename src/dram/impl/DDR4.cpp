@@ -243,7 +243,16 @@ class DDR4 : public IDRAM, public Implementation {
     };
 
     int get_preq_command(int command, const AddrVec_t& addr_vec) override {
+      RAMULATOR_DBG_PRINT("[DDR4] get_preq_command: command=%d, addr_vec.size()=%zu\n", command, addr_vec.size());
+      RAMULATOR_DBG_PRINT("[DDR4] m_levels[channel]=%d\n", m_levels["channel"]);
       int channel_id = addr_vec[m_levels["channel"]];
+      RAMULATOR_DBG_PRINT("[DDR4] channel_id=%d, m_channels.size()=%zu\n", channel_id, m_channels.size());
+      if (channel_id < 0 || channel_id >= (int)m_channels.size()) {
+        RAMULATOR_DBG_PRINT("[DDR4] ERROR: channel_id out of bounds!\n");
+        return -1;
+      }
+      RAMULATOR_DBG_PRINT("[DDR4] m_channels[%d]=%p\n", channel_id, (void*)m_channels[channel_id]);
+      RAMULATOR_DBG_PRINT("[DDR4] calling m_channels[%d]->get_preq_command\n", channel_id);
       return m_channels[channel_id]->get_preq_command(command, addr_vec, m_clk);
     };
 

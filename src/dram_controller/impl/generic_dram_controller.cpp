@@ -1,5 +1,6 @@
 #include "dram_controller/controller.h"
 #include "memory_system/memory_system.h"
+#include "base/simple_logging.h"
 
 namespace Ramulator {
 
@@ -169,9 +170,8 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
     }
 
     void tick() override {
-      printf("[RAMULATOR] tick() start, m_clk=%llu, read_buf=%zu, write_buf=%zu, pending=%zu\n",
+      RAMULATOR_DBG_PRINT("[RAMULATOR] tick() start, m_clk=%llu, read_buf=%zu, write_buf=%zu, pending=%zu\n",
              m_clk, m_read_buffer.size(), m_write_buffer.size(), pending.size());
-      fflush(stdout);
       m_clk++;
 
       // Update statistics
@@ -181,23 +181,23 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
       s_priority_queue_len += m_priority_buffer.size();
 
       // 1. Serve completed reads
-      printf("[RAMULATOR] calling serve_completed_reads()\n"); fflush(stdout);
+      RAMULATOR_DBG_PRINT("[RAMULATOR] calling serve_completed_reads()\n");
       serve_completed_reads();
 
-      printf("[RAMULATOR] calling m_refresh->tick()\n"); fflush(stdout);
+      RAMULATOR_DBG_PRINT("[RAMULATOR] calling m_refresh->tick()\n");
       m_refresh->tick();
 
       // 2. Try to find a request to serve.
       ReqBuffer::iterator req_it;
       ReqBuffer* buffer = nullptr;
-      printf("[RAMULATOR] calling schedule_request()\n"); fflush(stdout);
+      RAMULATOR_DBG_PRINT("[RAMULATOR] calling schedule_request()\n");
       bool request_found = schedule_request(req_it, buffer);
-      printf("[RAMULATOR] schedule_request returned: %d\n", request_found); fflush(stdout);
+      RAMULATOR_DBG_PRINT("[RAMULATOR] schedule_request returned: %d\n", request_found);
 
       // 2.1 Take row policy action
-      printf("[RAMULATOR] calling m_rowpolicy->update()\n"); fflush(stdout);
+      RAMULATOR_DBG_PRINT("[RAMULATOR] calling m_rowpolicy->update()\n");
       m_rowpolicy->update(request_found, req_it);
-      printf("[RAMULATOR] m_rowpolicy->update() done\n"); fflush(stdout);
+      RAMULATOR_DBG_PRINT("[RAMULATOR] m_rowpolicy->update() done\n");
 
       // 3. Update all plugins
       for (auto plugin : m_plugins) {
@@ -311,16 +311,14 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
 
         // DEBUG: Print pending request status
         if (m_clk % 1000 == 0 || req.depart <= m_clk) {
-          printf("[RAMULATOR-DEBUG] serve_completed_reads: clk=%llu, pending_size=%zu\n", m_clk, pending.size());
-          printf("[RAMULATOR-DEBUG] First pending req: addr=0x%llx, arrive=%llu, depart=%llu, has_callback=%s\n",
+          RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] serve_completed_reads: clk=%llu, pending_size=%zu\n", m_clk, pending.size());
+          RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] First pending req: addr=0x%llx, arrive=%llu, depart=%llu, has_callback=%s\n",
                  req.addr, req.arrive, req.depart, req.callback ? "YES" : "NO");
-          fflush(stdout);
         }
 
         if (req.depart <= m_clk) {
-          printf("[RAMULATOR-DEBUG] *** COMPLETING REQUEST: addr=0x%llx, latency=%llu ***\n",
+          RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] *** COMPLETING REQUEST: addr=0x%llx, latency=%llu ***\n",
                  req.addr, req.depart - req.arrive);
-          fflush(stdout);
 
           // Request received data from dram
           if (req.depart - req.arrive > 1) {
@@ -331,14 +329,11 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
 
           if (req.callback) {
             // If the request comes from outside (e.g., processor), call its callback
-            printf("[RAMULATOR-DEBUG] *** TRIGGERING CALLBACK for addr=0x%llx ***\n", req.addr);
-            fflush(stdout);
+            RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] *** TRIGGERING CALLBACK for addr=0x%llx ***\n", req.addr);
             req.callback(req);
-            printf("[RAMULATOR-DEBUG] *** CALLBACK COMPLETED for addr=0x%llx ***\n", req.addr);
-            fflush(stdout);
+            RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] *** CALLBACK COMPLETED for addr=0x%llx ***\n", req.addr);
           } else {
-            printf("[RAMULATOR-DEBUG] WARNING: No callback for completed request addr=0x%llx\n", req.addr);
-            fflush(stdout);
+            RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] WARNING: No callback for completed request addr=0x%llx\n", req.addr);
           }
           // Finally, remove this request from the pending queue
           pending.pop_front();
@@ -346,8 +341,7 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
       } else {
         // DEBUG: Occasional status when no pending requests
         if (m_clk % 10000 == 0) {
-          printf("[RAMULATOR-DEBUG] serve_completed_reads: No pending requests at clk=%llu\n", m_clk);
-          fflush(stdout);
+          RAMULATOR_DBG_PRINT("[RAMULATOR-DEBUG] serve_completed_reads: No pending requests at clk=%llu\n", m_clk);
         }
       }
     };
