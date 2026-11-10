@@ -1,51 +1,53 @@
-# Ramulator2 - spdlog-free Version
+# Ramulator2 without spdlog
 
-## Overview
+This fork replaces the spdlog/fmt logging dependencies with simple logging for
+integration with the Bambu HLS MDPI driver. The memory simulator implementation
+is unchanged by the build and installation cleanup.
 
-This is a modified copy of Ramulator2 with all spdlog and fmt dependencies removed to resolve compilation conflicts with Bambu HLS MDPI integration.
+## Build
 
-## Original Source
-- **Original location:** `/workspaces/soda-benchmarks-main/external/ramulator2/ramulator2-main`
-- **Creation date:** December 10, 2024
-- **Purpose:** Eliminate spdlog/fmt compilation conflicts with MDPI
+A C++20 compiler, CMake 3.15 or newer, and Git are required. CMake downloads the
+pinned yaml-cpp and argparse dependencies into the build directory.
 
-## Modifications Made
-
-### 1. Logging Replacement
-- All `#include <spdlog/spdlog.h>` replaced with simple logging
-- All `spdlog::` calls replaced with basic stdout/stderr output
-- All logging functionality simplified to printf-style
-
-### 2. String Formatting Replacement
-- All `fmt::format()` calls replaced with:
-  - `std::to_string()` for simple cases
-  - `sprintf()` / `snprintf()` for complex formatting
-  - String concatenation for simple cases
-
-### 3. Build System Changes
-- Removed spdlog dependency from CMakeLists.txt
-- Removed fmt dependency requirements
-- Updated include paths to exclude bundled libraries
-
-## Files Modified
-(This will be populated as modifications are made)
-
-## Build Instructions
-```bash
-cd /workspaces/soda-benchmarks-main/external/ramulator2/ramulator2-no-spdlog
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-make -j$(nproc)
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+./build/ramulator2 --help
 ```
 
-## Integration with MDPI
-This version can be used with MDPI by updating:
-- `RAMULATOR2_DIR` in Makefile.mk to point to this directory
-- Include paths to use this spdlog-free version
-- Link against the clean libramulator.so from this build
+The executable and shared library are created in `build/` (or the selected
+configuration directory with a multi-configuration generator). Out-of-source
+builds do not create artifacts or dependency checkouts in the source tree.
 
-## Status
-🚧 **IN PROGRESS** - Modifications underway
+## Install
 
----
-**Note:** This is a temporary fork for integration purposes. Production use should consider proper logging integration.
+```sh
+cmake --install build --prefix "$HOME/.local"
+```
+
+The installation uses the standard CMake `GNUInstallDirs` layout:
+
+- `bin/ramulator2`: simulator executable;
+- `lib/` (or the configured `CMAKE_INSTALL_LIBDIR`): versioned shared library;
+- `include/ramulator/`: public headers;
+- `lib/cmake/Ramulator/`: CMake package and exported target;
+- `share/licenses/ramulator/LICENSE`: upstream MIT license.
+
+The bundled yaml-cpp dependency installs its headers and library alongside
+Ramulator and is exported as `Ramulator::yaml-cpp`. The CLI has a relative runtime library path and can run
+from the installation without setting `LD_LIBRARY_PATH`.
+
+CMake consumers can use the installed package:
+
+```cmake
+find_package(Ramulator 2 CONFIG REQUIRED)
+target_link_libraries(my_simulator PRIVATE Ramulator::ramulator)
+```
+
+Pass `-DCMAKE_PREFIX_PATH=/path/to/prefix` when the prefix is outside CMake's
+normal search paths. Packaging supports `DESTDIR` and the standard install
+directory overrides such as `-DCMAKE_INSTALL_LIBDIR=lib64`.
+
+For Bambu MDPI integration, set `RAMULATOR2_DIR` to the installation prefix.
+The Bambu driver uses the installed headers and shared library; it does not
+need access to the Ramulator source or build directory.

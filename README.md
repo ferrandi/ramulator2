@@ -49,27 +49,27 @@ Ramulator uses some C++20 features to achieve both high runtime performance and 
 
 Ramulator 2.0 uses the following external libraries. The build system (CMake) will automatically download and configure these dependencies.
 - [argparse](https://github.com/p-ranav/argparse)
-- [spdlog](https://github.com/gabime/spdlog)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 ### Getting Started
-Clone the repository
+This fork uses simple logging instead of spdlog/fmt. See
+[the build and installation guide](README_NO_SPDLOG.md) for details.
+
+Clone this repository, then configure and build out of source:
 ```bash
-  $ git clone https://github.com/CMU-SAFARI/ramulator2
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+cmake --install build --prefix "$PWD/install"
 ```
-Configure the project and build the executable
-```bash
-  $ mkdir build
-  $ cd build
-  $ cmake ..
-  $ make -j
-  $ cp ./ramulator2 ../ramulator2
-  $ cd ..
-```
-This should produce a `ramulator2` executable that you can execute standalone and a `libramulator.so` dynamic library that can be used as a memory system library by other simulators.
+The executable and versioned shared library stay in `build/`. Installation
+places the executable in `install/bin`, the library in `install/lib` (or the
+configured library directory), and headers in `install/include/ramulator`.
+CMake consumers can use `find_package(Ramulator 2 CONFIG REQUIRED)` and link
+`Ramulator::ramulator`.
+
 ### Running Ramulator 2.0 in Standalone Mode
 Ramulator 2.0 comes with two independent simulation frontends: A memory-trace parser and a simplistic out-of-order core model that can accept instruction traces. To start a simulation with these frontends, just run the Ramulator 2.0 executable with the path to the configuration file specified through the `-f` argument
 ```bash
-  $ ./ramulator2 -f ./example_config.yaml
+  $ ./build/ramulator2 -f ./example_config.yaml
 ```
 To support easy automation of experiments (e.g., evaluate many different traces and sweep parameters), Ramulator 2.0 can accept the configurations as a string dump of the YAML document, which is usually produced by a scripting language that can easily parse and manipulate YAML documents (e.g., `python`). We provide an example `python` snippet to demonstrate an experiment of sweeping the `nRCD` timing constraint:
 ```python
@@ -85,14 +85,14 @@ with open(base_config_file, 'r') as f:
 
 for nRCD in nRCD_list:
   config["MemorySystem"]["DRAM"]["timing"]["nRCD"] = nRCD
-  cmds = ["./ramulator2", str(config)]
+  cmds = ["./build/ramulator2", str(config)]
   # Run the command with e.g., os.system(), subprocess.run(), ...
 ```
 ### Using Ramulator 2.0 as a Library (gem5 Example)
 Ramulator 2.0 packs all the interfaces and implementations into a dynamic library (`libramulator.so`). This can be used as a memory system library providing extensible cycle-accurate DRAM simulation to another simulator. We use gem5 as an example to show how to use Ramulator 2.0 as a library. We have tested and verified the integration of Ramulator 2.0 into gem5 as a library.
 
 1. Clone Ramulator 2.0 into `gem5/ext/ramulator2/` directory.
-2. Build Ramulator 2.0. You should have `libramulator.so` at `gem5/ext/ramulator2/ramulator2/libramulator.so`
+2. Build and install Ramulator 2.0 with `--prefix "$PWD/install"`. The library is under `gem5/ext/ramulator2/ramulator2/install/lib/`.
 3. Create a file `SConscript` at `gem5/ext/ramulator2/`, with the following contents to add Ramulator 2.0 to gem5's build system
 ```python
 import os
@@ -104,16 +104,15 @@ if not os.path.exists(Dir('.').srcnode().abspath + '/ramulator2'):
   Return()
 
 env['HAVE_RAMULATOR2'] = True
-ramulator2_path = os.path.join(Dir('#').abspath, 'ext/ramulator2/ramulator2/')
+ramulator2_path = os.path.join(Dir('#').abspath, 'ext/ramulator2/ramulator2/install')
 env.Prepend(CPPPATH=Dir('.').srcnode())
 env.Append(
   LIBS=['ramulator'],
-  LIBPATH=[ramulator2_path],
-  RPATH=[ramulator2_path],
+  LIBPATH=[ramulator2_path+'/lib'],
+  RPATH=[ramulator2_path+'/lib'],
   CPPPATH=[
-  ramulator2_path+'/src/', 
-  ramulator2_path+'/ext/spdlog/include',
-  ramulator2_path+'/ext/yaml-cpp/include'
+  ramulator2_path+'/include/ramulator',
+  ramulator2_path+'/include'
 ])
 ```
 4. Put the Ramulator2 wrapper code to `gem5/src/mem/`
