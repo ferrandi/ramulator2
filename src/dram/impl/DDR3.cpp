@@ -85,12 +85,13 @@ class DDR3 : public IDRAM, public Implementation {
     );
 
     inline static constexpr ImplDef m_requests = {
-      "read", "write", "all-bank-refresh",
+      "read", "write", "all-bank-refresh", "close-row",
     };
 
     inline static const ImplLUT m_request_translations = LUT (
       m_requests, m_commands, {
         {"read", "RD"}, {"write", "WR"}, {"all-bank-refresh", "REFab"},
+        {"close-row", "PRE"},
       }
     );
 

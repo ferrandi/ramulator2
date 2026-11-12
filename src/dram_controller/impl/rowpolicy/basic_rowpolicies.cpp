@@ -54,14 +54,14 @@ class ClosedRowPolicy : public IRowPolicy, public Implementation {
       m_cap = param<int>("cap").default_val(10000000); // TODO
 
       m_rank_level = m_dram->m_levels("rank");
-      m_bankgroup_level = m_dram->m_levels("bankgroup");
+      m_bankgroup_level = m_dram->m_levels.contains("bankgroup") ? m_dram->m_levels("bankgroup") : -1;
       m_bank_level = m_dram->m_levels("bank");
       m_row_level = m_dram->m_levels("row");
 
       m_PRE_req_id = m_dram->m_requests("close-row");
 
       m_num_ranks = m_dram->get_level_size("rank");
-      m_num_bankgroups = m_dram->get_level_size("bankgroup");
+      m_num_bankgroups = m_bankgroup_level >= 0 ? m_dram->get_level_size("bankgroup") : 1;
       m_num_banks = m_dram->get_level_size("bank");
       
       m_col_accesses.resize(m_num_banks * m_num_bankgroups * m_num_ranks, 0);
@@ -74,11 +74,15 @@ class ClosedRowPolicy : public IRowPolicy, public Implementation {
       if (!request_found)
         return;
 
+      // Standards without bank groups (e.g. DDR3) have one implicit group.
+      const int bankgroup = m_bankgroup_level >= 0 ? req_it->addr_vec[m_bankgroup_level] : 0;
+      const bool all_bankgroups = m_bankgroup_level < 0 || bankgroup == -1;
+
       if (m_dram->m_command_meta(req_it->command).is_closing ||
           m_dram->m_command_meta(req_it->command).is_refreshing)  // PRE or REF 
       {  
 
-        if (req_it->addr_vec[m_bankgroup_level] == -1 && req_it->addr_vec[m_bank_level] == -1) {  // all bank closes
+        if (all_bankgroups && req_it->addr_vec[m_bank_level] == -1) {  // all bank closes
           for (int b = 0; b < m_num_banks; b++) {
             for (int bg = 0; bg < m_num_bankgroups; bg++) {
               int rank_id = req_it->addr_vec[m_rank_level];
@@ -86,7 +90,7 @@ class ClosedRowPolicy : public IRowPolicy, public Implementation {
               m_col_accesses[flat_bank_id] = 0;
             }
           }
-        } else if (req_it->addr_vec[m_bankgroup_level] == -1) {  // same bank closes
+        } else if (all_bankgroups) {  // same bank closes
           for (int bg = 0; bg < m_num_bankgroups; bg++) {
             int bank_id = req_it->addr_vec[m_bank_level];
             int rank_id = req_it->addr_vec[m_rank_level];
@@ -95,7 +99,7 @@ class ClosedRowPolicy : public IRowPolicy, public Implementation {
           }
         } else {  // single bank closes  (PRE, VRR, RDA, WRA)
           int flat_bank_id = req_it->addr_vec[m_bank_level] + 
-                             req_it->addr_vec[m_bankgroup_level] * m_num_banks + 
+                             bankgroup * m_num_banks +
                              req_it->addr_vec[m_rank_level] * m_num_banks * m_num_bankgroups;
 
           m_col_accesses[flat_bank_id] = 0;
@@ -103,7 +107,7 @@ class ClosedRowPolicy : public IRowPolicy, public Implementation {
       } else if (m_dram->m_command_meta(req_it->command).is_accessing)  // RD or WR
       {
         int flat_bank_id = req_it->addr_vec[m_bank_level] + 
-                           req_it->addr_vec[m_bankgroup_level] * m_num_banks + 
+                           bankgroup * m_num_banks +
                            req_it->addr_vec[m_rank_level] * m_num_banks * m_num_bankgroups;
         
         m_col_accesses[flat_bank_id]++;
