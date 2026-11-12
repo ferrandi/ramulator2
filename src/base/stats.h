@@ -64,8 +64,7 @@ class StatWrapper : public StatWrapperBase {
     };
     template <typename... Args>
     StatWrapper& name(const std::string& format_str, Args&&... args) {
-      // Simple replacement - for more complex formatting, convert arguments to strings
-      return name(format_str);
+      return name(fmt::format(format_str, args...));
     };
     
     StatWrapper& desc(std::string desc) { _desc = desc; return *this; };
