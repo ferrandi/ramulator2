@@ -1,5 +1,9 @@
 # Ramulator 2.1 User Guide
 
+This Bambu fork defaults to the installed C++ library. For Bambu setup and the
+legacy preset adapter, see [Bambu fork integration](#bambu-fork-integration).
+The Python examples below explicitly enable the optional bindings.
+
 - [1. Overview](#1-overview)
 - [2. Using Ramulator 2.1](#2-using-ramulator-21)
 - [3. Your First Run](#3-your-first-run)
@@ -85,14 +89,14 @@ From the repository root:
 ```bash
 mkdir -p build
 cd build
-cmake ..
+cmake .. -DRAMULATOR_PYTHON_BINDINGS=ON
 make -j
 cd ..
 ```
 
-This default build does three useful things:
+This Python-enabled build does three useful things:
 
-- Builds `libramulator.so` in the repository root
+- Builds `libramulator.so` in the build directory
 - Builds the Python extension module under `python/ramulator/`
 - Runs the code generator so all the automatically generated code are in sync with the source code
 
@@ -109,15 +113,14 @@ You should see some example statistics being printed. You can head to Section 3 
 **Required:**
 
 - A C++20 compiler, such as `g++-12` or `clang++-15`
-- CMake 3.14 or newer
-- Python 3.10 or newer if you want the Python bindings, the CLI, or the tests
+- CMake 3.15 or newer
+- Python 3.10 or newer at build time for compatibility data generation; Python development headers are needed only for bindings
 
 **Auto-fetched by CMake (no manual install):**
 
 - `yaml-cpp` — YAML configuration parsing
 - `fmt` — C++ print formatting
 - `nanobind` — Python-C++ bindings (only when `RAMULATOR_PYTHON_BINDINGS=ON`)
-- `argparse` — command-line argument parsing (vendored in `ext/`)
 
 **Python dev dependencies** (install with `pip install -r requirements-dev.txt`):
 
@@ -133,7 +136,7 @@ To build Ramulator 2.1 in standalone mode:
 ```bash
 mkdir -p build
 cd build
-cmake ..
+cmake .. -DRAMULATOR_PYTHON_BINDINGS=ON
 make -j
 cd ..
 ```
